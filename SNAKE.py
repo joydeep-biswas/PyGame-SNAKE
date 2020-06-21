@@ -11,6 +11,7 @@ displayWidth = 640
 displayHeight = 480
 gameDisplay = pygame.display.set_mode((displayWidth, displayHeight))
 pygame.display.set_caption("PyGame SNAKE")
+highScoreFile = open("HighScore.txt", "r") # Opening The File Containing High Score in Read Mode
 clock = pygame.time.Clock()
 
 # Game Variables
@@ -20,6 +21,7 @@ yMovement = True
 xMovement = True
 bodyLength = 1
 playerScore = 0
+highScore = int(highScoreFile.read()) # Reading The High Score
 xVelocity = 0
 yVelocity = 0
 xPosition = round(displayWidth/2)
@@ -101,7 +103,17 @@ while not endGame :
         gameDisplay.blit(text, (320, 5))
         pygame.draw.rect(gameDisplay, colorRed, [xFood, yFood, 15, 15])
     else :
-        text = font.render("Game Over! Score : {}".format(playerScore), True, (0, 0, 0))
+        # High Score Checking and Modifying
+        if playerScore > highScore :
+            highScoreFile.close()
+            highScoreFile = open("HighScore.txt", "w") # Opening The File Containing High Score in Read Mode
+            highScore = playerScore
+            highScoreFile.write(str(highScore)) # Writing The High Score
+
+        text = font.render("Game Over! Your Score : {}".format(playerScore), True, (0, 0, 0))
+        textRectangle = text.get_rect(center=(displayWidth/2, displayHeight/2 - 30))
+        gameDisplay.blit(text, textRectangle)
+        text = font.render("High Score : {}".format(highScore), True, (0, 0, 0))
         textRectangle = text.get_rect(center=(displayWidth/2, displayHeight/2))
         gameDisplay.blit(text, textRectangle)
         text = font.render("Press Space To Restart (OR) Esc To End", True, (0, 0, 0))
@@ -128,5 +140,9 @@ while not endGame :
 
     pygame.display.update()
     clock.tick(24)
+
+highScoreFile.close()
 pygame.quit()
 quit()
+
+## Created by Joydeep Biswas ##
